@@ -20,7 +20,7 @@ public class LoanServiceTest {
     public void setup() {
         loanService = new LoanService();
 
-        testAccount = new Account("testUser123", "Business Owner");
+        testAccount = new Account("sshabalala123", "Business");
 
         List<Transaction> transactions = new ArrayList<>();
         transactions.add(new Transaction("2023-01-15", 5000));
@@ -45,8 +45,6 @@ public class LoanServiceTest {
         assertNotNull(loanEligibility.getInterestRate(), "Interest rate should be displayed based on the account profile.");
         assertTrue(loanEligibility.getInterestRate() > 0, "Interest rate should be positive.");
     }
-
-        }
-    }
+}
     
     
