@@ -1,5 +1,4 @@
-package Services;
+package fundify.services;
 
 public class LoanService {
-
 }

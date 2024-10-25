@@ -1,13 +1,13 @@
-package tests.Services;
-
+import fundify.models.Account;
+import fundify.models.Loan;
+import fundify.models.Transaction;
+import fundify.services.LoanService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import services.LoanService;
-import models.Account;
+
 
 import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,14 +18,15 @@ public class LoanServiceTest {
 
     @BeforeEach
     public void setup() {
-        loanService = new loanService();
+        loanService = new LoanService();
 
         testAccount = new Account("testUser123", "Business Owner");
 
         List<Transaction> transactions = new ArrayList<>();
-        transactions.add(new Transaction("2023-01-15", 5000)); 
+        transactions.add(new Transaction("2023-01-15", 5000));
         transactions.add(new Transaction("2023-02-20", 3000));
         testAccount.setTransactionHistory(transactions);
+    }
 
     @Test
     public void testApplyForMicroloan() {
