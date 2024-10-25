@@ -1,14 +1,26 @@
 package fundify;
 
 public class User {
-    public User(String name, String number) {
+    private String name;
+    private String phoneNumber;
+    private double accountBalance; // Added account balance field
+
+    // Constructor
+    public User(String name, String phoneNumber) {
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.accountBalance = 0.0; // Default balance
     }
 
-    public CharSequence getName() {
-        return "mock";
+    public String getName() {
+        return name;
     }
 
     public String getPhoneNumber() {
-        return "0123456789";
+        return phoneNumber;
+    }
+
+    public double getAccountBalance() {
+        return accountBalance;
     }
 }
