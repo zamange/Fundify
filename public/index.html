@@ -1,0 +1,67 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fundify</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/main.js" defer></script>
+</head>
+<body>
+<header>
+    <h1>Fundify</h1>
+    <nav>
+        <a href="#banking">Mobile Banking</a>
+        <a href="#microloans">Microloans</a>
+        <a href="#education">Financial Education</a>
+        <a href="#payments">Payment Solutions</a>
+        <a href="#bookkeeping">Bookkeeping</a>
+        <a href="#defi">DeFi and Blockchain</a>
+    </nav>
+</header>
+<main>
+    <!-- Mobile Banking and Digital Wallets -->
+    <section id="banking">
+        <h2>Mobile Banking and Digital Wallets</h2>
+        <button onclick="navigateTo('createAccount')">Create Savings Account</button>
+        <button onclick="navigateTo('transferFunds')">Transfer Funds</button>
+    </section>
+
+    <!-- Microloan Platforms -->
+    <section id="microloans">
+        <h2>Microloans</h2>
+        <button onclick="navigateTo('applyLoan')">Apply for Microloan</button>
+        <button onclick="navigateTo('assessCredit')">Credit Assessment</button>
+    </section>
+
+    <!-- Financial Literacy Programs -->
+    <section id="education">
+        <h2>Financial Education</h2>
+        <button onclick="navigateTo('educationModule')">Access Education Module</button>
+        <button onclick="navigateTo('languageSupport')">Multi-Language Support</button>
+    </section>
+
+    <!-- Payment Solutions -->
+    <section id="payments">
+        <h2>Affordable Payment Gateways</h2>
+        <button onclick="navigateTo('lowFee')">Low-Fee Transaction</button>
+        <button onclick="navigateTo('payGo')">Pay-as-You-Go POS</button>
+    </section>
+
+    <!-- Bookkeeping Tools -->
+    <section id="bookkeeping">
+        <h2>Bookkeeping and Invoicing</h2>
+        <button onclick="navigateTo('invoicing')">Create Invoice</button>
+        <button onclick="navigateTo('inventory')">Inventory Management</button>
+    </section>
+
+    <!-- Blockchain and DeFi -->
+    <section id="defi">
+        <h2>Blockchain and Decentralized Finance</h2>
+        <button onclick="navigateTo('decentralizedLoan')">Decentralized Loan</button>
+        <button onclick="navigateTo('identityVerification')">Blockchain Identity Verification</button>
+    </section>
+</main>
+</body>
+</html>
