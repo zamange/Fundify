@@ -1,5 +1,6 @@
 package fundify;
 
+import fundify.models.BookkeepingHandler;
 import fundify.services.AccountService;
 
 import java.util.Scanner;
@@ -21,10 +22,18 @@ public class Main {
             System.out.print("Please enter your phone number for verification: ");
             String phoneNumber = scanner.nextLine();
             accountService.createSavingsAccount(phoneNumber);
-        } else {
-            System.out.println("Thank you for using Fundify!");
         }
 
+        // Bookkeeping feature
+        BookkeepingHandler bookkeepingHandler = new BookkeepingHandler();
+        System.out.print("Would you like to add a bookkeeping record? (yes/no): ");
+        String bookkeepingResponse = scanner.nextLine();
+
+        if (bookkeepingResponse.equalsIgnoreCase("yes")) {
+            bookkeepingHandler.addBookkeepingRecord();
+        }
+
+        System.out.println("Thank you for using Fundify!");
         scanner.close();
     }
 }
