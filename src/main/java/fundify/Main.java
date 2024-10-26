@@ -2,7 +2,6 @@ package fundify;
 
 import fundify.models.BookkeepingHandler;
 import fundify.services.AccountService;
-
 import java.util.Scanner;
 
 public class Main {
@@ -11,7 +10,14 @@ public class Main {
         userDAO.createDatabase(); // Create database and users table
 
         RegistrationService registrationService = new RegistrationService();
-        registrationService.registerUser(); // Register a user
+        registrationService.registerUser(); // Register a user0
+
+        // Output all available options to the user
+        System.out.println("Available Features:");
+        System.out.println("1: Mobile Banking and Digital Wallets");
+        System.out.println("2: Microloan Platforms");
+        System.out.println("3: Financial Literacy Programs");
+        System.out.println("4: Digital Bookkeeping and Invoicing Tools");
 
         Scanner scanner = new Scanner(System.in);
         System.out.print("Would you like to create a savings account? (yes/no): ");
