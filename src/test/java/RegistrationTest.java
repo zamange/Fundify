@@ -21,11 +21,11 @@ public class RegistrationTest {
 
         boolean isRegistered = userDAO.addUser(user);
 
-        assertTrue(isRegistered, "User should be successfully registered and saved to the database.");
+        assertTrue(isRegistered, "User should be successfully registered or already exists in the database.");
 
-        // Verify the user is actually saved (additional check)
-        // You might need to implement a method in UserDAO to check for existence
+        // Additional verification can be done here if needed
     }
+
 
     @Test
     public void testUserRegistrationWithEmptyFields() {

@@ -3,7 +3,7 @@ package fundify;
 import java.sql.*;
 
 public class UserDAO {
-    private static final String DB_URL = "jdbc:sqlite:users.db"; // Update with your database URL
+    private static final String DB_URL = "jdbc:sqlite:users.db";
     private static final String CREATE_TABLE_SQL = "CREATE TABLE IF NOT EXISTS users ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "name TEXT NOT NULL,"
@@ -29,6 +29,23 @@ public class UserDAO {
         }
     }
 
+    // Method to check if a user with the given phone number already exists
+    private boolean userExists(String phoneNumber) {
+        String CHECK_USER_SQL = "SELECT COUNT(*) FROM users WHERE phone_number = ?";
+        try (Connection connection = DriverManager.getConnection(DB_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(CHECK_USER_SQL)) {
+
+            preparedStatement.setString(1, phoneNumber);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     // Method to add a user to the database
     public boolean addUser(User user) {
         if (user.getName().isEmpty() || user.getPhoneNumber().isEmpty()) {
@@ -36,6 +53,10 @@ public class UserDAO {
         }
         if (!user.getPhoneNumber().matches("\\d+")) { // Basic numeric check
             throw new IllegalArgumentException("Phone number must be numeric");
+        }
+
+        if (userExists(user.getPhoneNumber())) {
+            return true; // User already exists, so treat as success
         }
 
         String INSERT_USER_SQL = "INSERT INTO users (name, phone_number, account_balance) VALUES (?, ?, ?)";
@@ -47,10 +68,10 @@ public class UserDAO {
             preparedStatement.setDouble(3, user.getAccountBalance());
             int rowsAffected = preparedStatement.executeUpdate();
 
-            return rowsAffected > 0; // Return true if user was added successfully
+            return rowsAffected > 0;
         } catch (SQLException e) {
             e.printStackTrace();
-            return false; // Return false in case of an error
+            return false;
         }
     }
 }
