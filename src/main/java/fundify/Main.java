@@ -10,36 +10,55 @@ public class Main {
         userDAO.createDatabase(); // Create database and users table
 
         RegistrationService registrationService = new RegistrationService();
-        registrationService.registerUser(); // Register a user0
-
-        // Output all available options to the user
-        System.out.println("Available Features:");
-        System.out.println("1: Mobile Banking and Digital Wallets");
-        System.out.println("2: Microloan Platforms");
-        System.out.println("3: Financial Literacy Programs");
-        System.out.println("4: Digital Bookkeeping and Invoicing Tools");
+        registrationService.registerUser(); // Register a user
 
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Would you like to create a savings account? (yes/no): ");
-        String response = scanner.nextLine();
+        String response = "";
 
-        if (response.equalsIgnoreCase("yes")) {
-            AccountService accountService = new AccountService();
-            System.out.print("Please enter your phone number for verification: ");
-            String phoneNumber = scanner.nextLine();
-            accountService.createSavingsAccount(phoneNumber);
+        while (!response.equals("5")) {
+            // Output all available options to the user
+            System.out.println("\nAvailable Features:");
+            System.out.println("1: Mobile Banking and Digital Wallets");
+            System.out.println("2: Microloan Platforms");
+            System.out.println("3: Financial Literacy Programs");
+            System.out.println("4: Digital Bookkeeping and Invoicing Tools");
+            System.out.println("5: Close");
+            System.out.print("Please select an option (1-5): ");
+
+            response = scanner.nextLine();
+
+            switch (response) {
+                case "1":
+                    AccountService accountService = new AccountService();
+                    System.out.print("Please enter your phone number for verification: ");
+                    String phoneNumber = scanner.nextLine();
+                    accountService.createSavingsAccount(phoneNumber);
+                    break;
+
+                case "2":
+                    // Microloan platform logic could go here
+                    System.out.println("Microloan platform feature is not yet implemented.");
+                    break;
+
+                case "3":
+                    FinancialLiteracyModule.accessFinancialEducation();
+                    break;
+
+                case "4":
+                    BookkeepingHandler bookkeepingHandler = new BookkeepingHandler();
+                    bookkeepingHandler.addBookkeepingRecord();
+                    break;
+
+                case "5":
+                    System.out.println("Thank you for using Fundify!");
+                    break;
+
+                default:
+                    System.out.println("Invalid selection. Please choose a valid option.");
+                    break;
+            }
         }
 
-        // Bookkeeping feature
-        BookkeepingHandler bookkeepingHandler = new BookkeepingHandler();
-        System.out.print("Would you like to add a bookkeeping record? (yes/no): ");
-        String bookkeepingResponse = scanner.nextLine();
-
-        if (bookkeepingResponse.equalsIgnoreCase("yes")) {
-            bookkeepingHandler.addBookkeepingRecord();
-        }
-
-        System.out.println("Thank you for using Fundify!");
         scanner.close();
     }
 }
