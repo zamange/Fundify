@@ -28,14 +28,15 @@ public class AccountService {
         // Simulate identity verification
         if (verifyIdentity(userPhoneNumber)) {
             String accountNumber = generateAccountNumber();
-            double savingsGoal = 0.0; // Initialize with a default value or prompt user for input later
+            System.out.print("Enter your savings goal: ");
+            double savingsGoal = scanner.nextDouble();
             SavingsAccount account = new SavingsAccount(accountNumber, userPhoneNumber, savingsGoal);
 
             // Save the account to the database
             if (userDAO.updateUserWithSavingsAccount(userPhoneNumber, account)) {
                 System.out.println("Welcome!");
                 System.out.println("Account Number: " + account.getAccountNumber());
-                setSavingsGoal(account);
+                System.out.println("Savings goal set to: R" + account.getSavingsGoal());
             } else {
                 System.out.println("Failed to save savings account to the database.");
             }

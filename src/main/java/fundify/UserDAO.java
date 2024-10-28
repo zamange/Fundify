@@ -72,7 +72,6 @@ public class UserDAO {
         }
     }
 
-    // Method to update user with savings account information
     public boolean updateUserWithSavingsAccount(String phoneNumber, SavingsAccount account) {
         String UPDATE_USER_SQL = "UPDATE users SET savings_account_number = ?, savings_goal = ? WHERE phone_number = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL);
