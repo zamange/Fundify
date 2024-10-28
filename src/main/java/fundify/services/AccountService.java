@@ -4,10 +4,14 @@ import fundify.UserDAO;
 import fundify.models.Transaction;
 import fundify.services.SavingsAccount;
 
+import java.sql.*;
 import java.util.List;
 import java.util.Scanner;
 
+import static fundify.UserDAO.DB_URL;
+
 public class AccountService {
+    private static final String DB_URL = "jdbc:sqlite:users.db";
     private UserDAO userDAO;
     private Scanner scanner;
 
@@ -16,15 +20,20 @@ public class AccountService {
         this.scanner = new Scanner(System.in);
     }
 
+    public SavingsAccount getSavingsAccount(String userPhoneNumber) {
+        return userDAO.getSavingsAccountByUserPhoneNumber(userPhoneNumber);
+    }
+
     public void createSavingsAccount(String userPhoneNumber) {
         // Simulate identity verification
         if (verifyIdentity(userPhoneNumber)) {
             String accountNumber = generateAccountNumber();
-            SavingsAccount account = new SavingsAccount(accountNumber, userPhoneNumber);
+            double savingsGoal = 0.0; // Initialize with a default value or prompt user for input later
+            SavingsAccount account = new SavingsAccount(accountNumber, userPhoneNumber, savingsGoal);
 
             // Save the account to the database
             if (userDAO.updateUserWithSavingsAccount(userPhoneNumber, account)) {
-                System.out.println("Savings account created and saved successfully!");
+                System.out.println("Welcome!");
                 System.out.println("Account Number: " + account.getAccountNumber());
                 setSavingsGoal(account);
             } else {
@@ -36,12 +45,10 @@ public class AccountService {
     }
 
     private boolean verifyIdentity(String userPhoneNumber) {
-        // Simulate identity verification process (this could be more complex)
         return true; // Assume verification is successful for this example
     }
 
     private String generateAccountNumber() {
-        // Generate a unique account number (simplified for this example)
         return "SAV" + System.currentTimeMillis(); // Use current time as a simple unique ID
     }
 
@@ -52,6 +59,32 @@ public class AccountService {
         System.out.println("Savings goal set to: R" + goal);
     }
 
+    public void depositFunds(String userPhoneNumber, double amount) {
+        if (amount <= 0) {
+            System.out.println("Invalid amount. Please enter a positive value.");
+            return;
+        }
+
+        // Get the user's savings account
+        SavingsAccount account = userDAO.getSavingsAccountByUserPhoneNumber(userPhoneNumber);
+        if (account == null) {
+            System.out.println("Account not found for this phone number.");
+            return;
+        }
+
+        // Update the balance
+        double newBalance = account.getBalance() + amount;
+        if (userDAO.updateAccountBalance(userPhoneNumber, newBalance)) {
+            account.setBalance(newBalance); // Update the local account balance
+            Transaction transaction = new Transaction(generateTransactionId(), userPhoneNumber, amount);
+            userDAO.saveTransaction(transaction);
+
+            System.out.println("Successfully deposited R" + amount + " into your account.");
+        } else {
+            System.out.println("Failed to update the account balance in the database.");
+        }
+    }
+
     public void transferFunds(String userPhoneNumber) {
         System.out.print("Enter the supplier's account number: ");
         String supplierAccountNumber = scanner.nextLine();
@@ -59,14 +92,12 @@ public class AccountService {
         System.out.print("Enter the amount to transfer: ");
         double amount = scanner.nextDouble();
 
-        // Check if the user has sufficient funds
         double currentBalance = getUserBalance(userPhoneNumber);
         if (currentBalance < amount) {
             System.out.println("Insufficient funds. Transfer cannot be completed.");
             return;
         }
 
-        // Prompt for confirmation
         System.out.println("You are about to transfer R" + amount + " to " + supplierAccountNumber + ". Do you want to proceed? (yes/no)");
         scanner.nextLine(); // Clear the buffer
         String confirmation = scanner.nextLine();
@@ -80,47 +111,44 @@ public class AccountService {
     }
 
     private void processTransfer(String userPhoneNumber, String supplierAccountNumber, double amount) {
-        // Deduct the amount from the user's balance
-        updateBalance(userPhoneNumber, -amount);
+        // Get the current balance of the user
+        double currentBalance = getUserBalance(userPhoneNumber);
 
-        // Create a transaction receipt
-        Transaction transaction = new Transaction(generateTransactionId(), userPhoneNumber, amount);
+        // Update balance: Deduct the amount being transferred
+        double newBalance = currentBalance - amount;
 
-        // Save the transaction to the database
-        userDAO.saveTransaction(transaction);
-    }
-
-    private double getUserBalance(String userPhoneNumber) {
-        // Implement logic to retrieve the user's current balance from the database
-        return 0.0; // Placeholder: replace with actual balance retrieval
-    }
-
-    private void updateBalance(String userPhoneNumber, double amount) {
-        // Implement logic to update the user's balance in the database
-    }
-
-    private String generateTransactionId() {
-        // Generate a unique transaction ID
-        return "TX" + System.currentTimeMillis();
-    }
-
-    // Method to transfer funds to suppliers
-    public boolean transferFunds(String userPhoneNumber, String supplierAccountNumber, double amount) {
-        // You can implement balance checks and necessary validations here
-        // For demonstration, we'll directly save the transaction
-        Transaction transaction = new Transaction(userPhoneNumber, supplierAccountNumber, amount);
-        boolean transactionSaved = userDAO.saveTransaction(transaction);
-
-        if (transactionSaved) {
-            System.out.println("Funds transferred successfully!");
-            return true;
+        // Update the balance in the database
+        if (userDAO.updateAccountBalance(userPhoneNumber, newBalance)) {
+            // Create and save the transaction
+            Transaction transaction = new Transaction(generateTransactionId(), userPhoneNumber, amount);
+            userDAO.saveTransaction(transaction);
         } else {
-            System.out.println("Failed to transfer funds. Please try again.");
-            return false;
+            System.out.println("Failed to update account balance during transfer.");
         }
     }
 
-    // Method to get transaction history for a user
+    private double getUserBalance(String userPhoneNumber) {
+        String SELECT_BALANCE_SQL = "SELECT account_balance FROM users WHERE phone_number = ?";
+        try (Connection connection = DriverManager.getConnection(DB_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BALANCE_SQL)) {
+
+            preparedStatement.setString(1, userPhoneNumber);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getDouble("account_balance");
+            }
+        } catch (SQLException e) {
+            System.out.println("Failed to retrieve user balance.");
+            e.printStackTrace();
+        }
+        return 0.0; // Return 0 if balance couldn't be retrieved
+    }
+
+    private String generateTransactionId() {
+        return "TX" + System.currentTimeMillis();
+    }
+
     public void getTransactionHistory(String userPhoneNumber) {
         List<Transaction> transactions = userDAO.getTransactionsByUserPhoneNumber(userPhoneNumber);
 
