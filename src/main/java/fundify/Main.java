@@ -15,29 +15,39 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         String response = "";
 
-        while (!response.equals("5")) {
+        // Declare AccountService outside the switch statement
+        AccountService accountService = new AccountService();
+
+        while (!response.equals("6")) { // Updated to 6 for closing
             // Output all available options to the user
             System.out.println("\nAvailable Features:");
             System.out.println("1: Mobile Banking and Digital Wallets");
-            System.out.println("2: Microloan Platforms");
+            System.out.println("2: Deposit");
             System.out.println("3: Financial Literacy Programs");
             System.out.println("4: Digital Bookkeeping and Invoicing Tools");
-            System.out.println("5: Close");
-            System.out.print("Please select an option (1-5): ");
+            System.out.println("5: Transfer funds");
+            System.out.println("6: Close");
+
+            System.out.print("Please select an option (1-6): "); // Updated to 6
 
             response = scanner.nextLine();
 
             switch (response) {
                 case "1":
-                    AccountService accountService = new AccountService();
                     System.out.print("Please enter your phone number for verification: ");
                     String phoneNumber = scanner.nextLine();
                     accountService.createSavingsAccount(phoneNumber);
                     break;
 
                 case "2":
-                    // Microloan platform logic could go here
-                    System.out.println("Microloan platform feature is not yet implemented.");
+                    System.out.print("Please enter your phone number: ");
+                    String userPhoneNumber = scanner.nextLine();
+
+                    System.out.print("Please enter the amount to deposit: ");
+                    double amount = scanner.nextDouble();
+                    scanner.nextLine(); // Consume the newline character
+
+                    accountService.depositFunds(userPhoneNumber, amount);
                     break;
 
                 case "3":
@@ -50,6 +60,12 @@ public class Main {
                     break;
 
                 case "5":
+                    System.out.print("Please enter your phone number: ");
+                    String phoneNumberForTransfer = scanner.nextLine();
+                    accountService.transferFunds(phoneNumberForTransfer); // Call transfer funds method
+                    break;
+
+                case "6":
                     System.out.println("Thank you for using Fundify!");
                     break;
 
@@ -63,7 +79,6 @@ public class Main {
     }
 
     private static void accessFinancialLiteracyPrograms() {
-        // Display financial literacy programs or educational modules
         FinancialLiteracyModule.accessFinancialEducation();
     }
 }

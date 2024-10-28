@@ -1,16 +1,19 @@
 package fundify.services;
 
 public class SavingsAccount {
-    private String accountNumber; // Unique account number
-    private String userPhoneNumber; // Linked user
-    private double savingsGoal; // Savings goal
+    private String accountNumber;
+    private String userPhoneNumber;
+    private double savingsGoal;
+    private double balance; // Assuming balance is also a part of the SavingsAccount
 
-    public SavingsAccount(String accountNumber, String userPhoneNumber) {
+    public SavingsAccount(String accountNumber, String userPhoneNumber, double savingsGoal) {
         this.accountNumber = accountNumber;
         this.userPhoneNumber = userPhoneNumber;
-        this.savingsGoal = 0.0; // Default savings goal
+        this.savingsGoal = savingsGoal;
+        this.balance = 0.0; // Initialize balance to 0 or a default value
     }
 
+    // Getters and setters
     public String getAccountNumber() {
         return accountNumber;
     }
@@ -25,5 +28,13 @@ public class SavingsAccount {
 
     public void setSavingsGoal(double savingsGoal) {
         this.savingsGoal = savingsGoal;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
     }
 }

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDAO {
-    private static final String DB_URL = "jdbc:sqlite:users.db";
+    public static final String DB_URL = "jdbc:sqlite:users.db";
 
     private static final String CREATE_TABLE_SQL = "CREATE TABLE IF NOT EXISTS users ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -133,4 +133,66 @@ public class UserDAO {
         }
         return transactions;
     }
+
+//    public SavingsAccount getSavingsAccountByAccountNumber(String accountNumber) {
+//        String SELECT_ACCOUNT_SQL = "SELECT savings_account_number, user_phone_number, savings_goal FROM users WHERE savings_account_number = ?";
+//        SavingsAccount account = null;
+//
+//        try (Connection connection = DriverManager.getConnection(DB_URL);
+//             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ACCOUNT_SQL)) {
+//
+//            preparedStatement.setString(1, accountNumber);
+//            ResultSet resultSet = preparedStatement.executeQuery();
+//
+//            if (resultSet.next()) {
+//                String userPhone = resultSet.getString("user_phone_number");
+//                double savingsGoal = resultSet.getDouble("savings_goal");
+//                account = new SavingsAccount(accountNumber, userPhone, savingsGoal);
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return account;
+//    }
+
+    public boolean updateAccountBalance(String phoneNumber, double newBalance) {
+        String UPDATE_BALANCE_SQL = "UPDATE users SET account_balance = ? WHERE phone_number = ?";
+        try (Connection connection = DriverManager.getConnection(DB_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_BALANCE_SQL)) {
+
+            preparedStatement.setDouble(1, newBalance);
+            preparedStatement.setString(2, phoneNumber);
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            return rowsAffected > 0; // Return true if the balance was updated successfully
+        } catch (SQLException e) {
+            System.out.println("Failed to update account balance.");
+            e.printStackTrace();
+            return false; // Return false if there was an error
+        }
+    }
+
+
+    public SavingsAccount getSavingsAccountByUserPhoneNumber(String userPhoneNumber) {
+        String SELECT_ACCOUNT_SQL = "SELECT savings_account_number, savings_goal FROM users WHERE phone_number = ?";
+        SavingsAccount account = null;
+
+        try (Connection connection = DriverManager.getConnection(DB_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ACCOUNT_SQL)) {
+
+            preparedStatement.setString(1, userPhoneNumber);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                String accountNumber = resultSet.getString("savings_account_number");
+                double savingsGoal = resultSet.getDouble("savings_goal");
+                account = new SavingsAccount(accountNumber, userPhoneNumber, savingsGoal);
+            }
+        } catch (SQLException e) {
+            System.out.println("Failed to retrieve savings account.");
+            e.printStackTrace();
+        }
+        return account;
+    }
+
 }
