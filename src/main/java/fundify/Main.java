@@ -41,7 +41,7 @@ public class Main {
                     break;
 
                 case "3":
-                    FinancialLiteracyModule.accessFinancialEducation();
+                    accessFinancialLiteracyPrograms(); // Call to the financial literacy module
                     break;
 
                 case "4":
@@ -60,5 +60,10 @@ public class Main {
         }
 
         scanner.close();
+    }
+
+    private static void accessFinancialLiteracyPrograms() {
+        // Display financial literacy programs or educational modules
+        FinancialLiteracyModule.accessFinancialEducation();
     }
 }
